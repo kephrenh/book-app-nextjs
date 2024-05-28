@@ -31,6 +31,29 @@ const BooksPage = () => {
     setBooks(newBooks);
   };
 
+  const handleDelete = async (book: Book) => {
+    try {
+      const res = await fetch(`/api/delete-book/${book.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      console.log(data);
+
+      if (res.ok) {
+        alert("Book deleted successfully");
+        const newBooks = books.filter((b: Book) => b.id !== book.id);
+        setBooks(newBooks);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error deleting book", error);
+    }
+  };
+
+  const handleEdit = async (book: Book) => {
+    router.push(`/books/edit?id=${book.id}`);
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto text-center">
       <h1 className="text-3xl font-bold mt-20">Books List</h1>
@@ -54,15 +77,13 @@ const BooksPage = () => {
             <button
               className=" text-xs text-gray-900 leading-7 hover:text-gray-900/70"
               disabled={!book.checked}
-              // onClick={() => handleDelete(book)}
-            >
+              onClick={() => handleDelete(book)}>
               {book.checked ? "Delete" : ""}
             </button>
             <button
               disabled={!book.checked}
               className="text-xs text-gray-900 hover:text-gray-900/70"
-              // onClick={() => handleEdit(book)}
-            >
+              onClick={() => handleEdit(book)}>
               {book.checked ? "Edit Book" : ""}
             </button>
           </div>
